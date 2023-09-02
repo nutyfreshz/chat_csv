@@ -13,4 +13,4 @@ if input_csv is not None:
   with col1:
     st.info('CSV Uploaded success fully')
     data = pd.read_csv(input_csv)
-    st.DataFrame(data)
+    st.dataframe(data)
