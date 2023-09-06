@@ -1,4 +1,4 @@
-!pip install dotenv
+pip install python-dotenv
 
 import streamlit as st
 import pandas as pd
