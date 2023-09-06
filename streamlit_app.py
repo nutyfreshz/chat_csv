@@ -10,8 +10,10 @@ from pandasai.llm.openai import OpenAI
 from pandasai import PandasAI
 
 load_dotenv()
+# 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
+openai_api_key = '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'
 
-openai_api = os.getenv('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')
+# os.getenv('OPENAI_API_KEY')
 
 #Function for pandasAI
 def chat_with_csv(df, prompt):
