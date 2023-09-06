@@ -1,5 +1,21 @@
 import streamlit as st
 import pandas as pd
+import os
+from dotenv import load_dotenv
+from pandasai.llm.openai import OpenAI
+from pandasai import PandasAI
+
+load_dotenv()
+
+openai_api = os.getenv('OOENAI_API_KEY')
+
+#Function for pandasAI
+def chat_with_csv(df, prompt):
+  llm = OpenAI()
+  pandas_ai = PandasAI(llm)
+  result = pandas_ai.run(df, prompt = prompt)
+  print(result)
+  return result
 
 st.set_page_config(layout = 'wide')
 
@@ -14,3 +30,13 @@ if input_csv is not None:
     st.info('CSV Uploaded success fully')
     data = pd.read_csv(input_csv)
     st.dataframe(data)
+
+  with col2:
+    st.info('Chat with your CSV')
+
+    input_text = st.text_area('Enter your query')
+    if input_text is not None:
+      if st.button('Chat with CSV')
+          st.info('Your Query: ' + input_text)
+          result = chat_with_csv(data, input_text)
+          st.success(result)
