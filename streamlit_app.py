@@ -36,7 +36,7 @@ if input_csv is not None:
 
     input_text = st.text_area('Enter your query')
     if input_text is not None:
-      if st.button('Chat with CSV')
+      if st.button('Chat with CSV'):
           st.info('Your Query: ' + input_text)
           result = chat_with_csv(data, input_text)
           st.success(result)
