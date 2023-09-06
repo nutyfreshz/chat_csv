@@ -1,8 +1,6 @@
 import subprocess
-
 # Use subprocess to run the pip install command
 subprocess.call(["pip", "install", "-r", "requirements.txt"])
-
 
 import streamlit as st
 import pandas as pd
