@@ -11,7 +11,7 @@ from pandasai import PandasAI
 
 load_dotenv()
 
-openai_api = os.getenv('OOENAI_API_KEY')
+openai_api = os.getenv('OPENAI_API_KEY')
 
 #Function for pandasAI
 def chat_with_csv(df, prompt):
