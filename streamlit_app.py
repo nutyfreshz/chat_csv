@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 from pandasai.llm.openai import OpenAI
 from pandasai import PandasAI
 import shelve
+import time
 
 load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 
-# Function to initialize the cache safely
 def initialize_cache():
     try:
         cache = shelve.open('/mount/src/chat_csv/cache/cache', writeback=True)
@@ -19,37 +19,40 @@ def initialize_cache():
         st.error(f"Error initializing the cache: {e}")
         return None
 
-# Function for pandasAI
 def chat_with_csv(df, prompt, cache):
     llm = OpenAI(api_key=openai_api_key)
     pandas_ai = PandasAI(llm)
     
-    try:
+    def cache_operation():
         if cache is None:
             st.warning("Cache initialization failed. Caching disabled.")
-            result = pandas_ai.run(df, prompt=prompt)
+            return pandas_ai.run(df, prompt=prompt)
+        elif prompt in cache:
+            st.info("Result retrieved from cache.")
+            return cache[prompt]
         else:
-            # Check if the prompt is already in the cache
-            if prompt in cache:
-                st.info("Result retrieved from cache.")
-                result = cache[prompt]
-            else:
-                st.info("Running AI model.")
-                result = pandas_ai.run(df, prompt=prompt)
-                # Store the result in the cache
-                cache[prompt] = result
-                cache.sync()  # Ensure data is written to the cache file
+            st.info("Running AI model.")
+            result = pandas_ai.run(df, prompt=prompt)
+            cache[prompt] = result
+            cache.sync()
+            return result
 
-        return result
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
-        return None
+    return retry(cache_operation)
+
+def retry(func, max_retries=3):
+    for i in range(max_retries):
+        try:
+            result = func()
+            return result
+        except Exception as e:
+            st.warning(f"Retry attempt {i + 1}: {e}")
+            time.sleep(1)  # Wait for 1 second before retrying
+    return None
 
 st.set_page_config(layout='wide')
 
 st.title('ChatCSV with LLM')
 
-# Initialize the cache
 cache = initialize_cache()
 
 input_csv = st.file_uploader('Upload your CSV file', type=['csv'])
