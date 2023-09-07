@@ -29,7 +29,7 @@ if input_csv is not None:
         with col1:
             st.info("CSV Uploaded Successfully")
             data = pd.read_csv(input_csv)
-            df = SmartDataFrame(data, config = {'llm':llm})
+            # df = SmartDataFrame(data, config = {'llm':llm})
             st.dataframe(data, use_container_width=True)
 
         with col2:
@@ -41,5 +41,5 @@ if input_csv is not None:
             if input_text is not None:
                 if st.button("Chat with CSV"):
                     st.info("Your Query: "+input_text)
-                    result = chat(df, input_text)
+                    result = chat_with_csv(data, input_text)
                     st.success(result)
