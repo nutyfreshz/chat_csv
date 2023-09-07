@@ -1,25 +1,25 @@
 import subprocess
-
-# Use subprocess to run the pip install command
-subprocess.call(["pip", "install", "-r", "requirements.txt"])
-
 import streamlit as st
 import pandas as pd
 import os
 from dotenv import load_dotenv
 from pandasai.llm.openai import OpenAI
 from pandasai import PandasAI
-import shelve  # Import shelve library
+import shelve
 
 load_dotenv()
 openai_api_key = os.getenv('OPENAI_API_KEY')
 
-# Function for pandasAI
 def chat_with_csv(df, prompt):
-    llm = OpenAI(api_key=openai_api_key)  # Pass your API key here
+    llm = OpenAI(api_key=openai_api_key)
     pandas_ai = PandasAI(llm)
-    result = pandas_ai.run(df, prompt=prompt)
-    return result
+    try:
+        result = pandas_ai.run(df, prompt=prompt)
+        return result
+    except Exception as e:
+        # Log the exception for debugging
+        st.error(f"An error occurred: {e}")
+        return None
 
 st.set_page_config(layout='wide')
 
@@ -42,12 +42,6 @@ if input_csv is not None:
         if input_text is not None:
             if st.button('Chat with CSV'):
                 st.info('Your Query: ' + input_text)
-
-                # DEBUG: Print the path where the configuration file should be
-                print("Configuration file path:", os.path.abspath('pandasai.json'))
-
-                # DEBUG: Print the path where the cache file should be
-                print("Cache file path:", os.path.abspath('/mount/src/chat_csv/cache/cache'))
-
                 result = chat_with_csv(data, input_text)
-                st.success(result)
+                if result:
+                    st.success(result)
