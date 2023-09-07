@@ -20,7 +20,7 @@ def chat_with_csv(df,prompt):
 
 st.set_page_config(layout='wide')
 
-st.title("ChatCSV powered by LLM")
+st.title("ChatCSV with LLM")
 
 input_csv = st.file_uploader("Upload your CSV file", type=['csv'])
 
@@ -35,7 +35,7 @@ if input_csv is not None:
 
         with col2:
 
-            st.info("Chat Below")
+            st.info("Let's Chat")
             
             input_text = st.text_area("Enter your query")
 
