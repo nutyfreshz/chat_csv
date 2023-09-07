@@ -1,4 +1,5 @@
 import subprocess
+
 # Use subprocess to run the pip install command
 subprocess.call(["pip", "install", "-r", "requirements.txt"])
 
@@ -8,9 +9,9 @@ import os
 from dotenv import load_dotenv
 from pandasai.llm.openai import OpenAI
 from pandasai import PandasAI
+import shelve  # Import shelve library
 
 load_dotenv()
-# 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
 openai_api_key = os.getenv('OPENAI_API_KEY')
 
 # Function for pandasAI
@@ -41,5 +42,12 @@ if input_csv is not None:
         if input_text is not None:
             if st.button('Chat with CSV'):
                 st.info('Your Query: ' + input_text)
+
+                # DEBUG: Print the path where the configuration file should be
+                print("Configuration file path:", os.path.abspath('pandasai.json'))
+
+                # DEBUG: Print the path where the cache file should be
+                print("Cache file path:", os.path.abspath('/mount/src/chat_csv/cache/cache'))
+
                 result = chat_with_csv(data, input_text)
                 st.success(result)
